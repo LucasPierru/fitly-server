@@ -1,3 +1,5 @@
+import { DefaultProperties } from "./common.types";
+
 export type FoodInformation = {
   id: number;
   name: string;
@@ -37,17 +39,18 @@ export type EstimatedCost = {
   unit: string;
 };
 
-export type IIngredient = FoodInformation & {
-  original: string;
-  originalName: string;
-  amount: number;
-  unit: string;
-  unitShort: Unit;
-  unitLong: string;
-  estimatedCost: EstimatedCost;
-  consistency: string;
-  shoppingListUnits: string[];
-  meta: [];
-  nutrition: Nutrition;
-  categoryPath: string[];
-};
+export type IIngredient = DefaultProperties &
+  FoodInformation & {
+    original: string;
+    originalName: string;
+    amount: number;
+    unit: string;
+    unitShort: Unit;
+    unitLong: string;
+    estimatedCost: EstimatedCost;
+    consistency: string;
+    shoppingListUnits: string[];
+    meta: [];
+    nutrition: Nutrition;
+    categoryPath: string[];
+  };

@@ -1,10 +1,11 @@
-import mongoose from "mongoose";
+import mongoose, { SchemaTypes } from "mongoose";
 const { Schema, model } = mongoose;
-import type { IIngredient } from "../types/ingredients.types";
-import { IRecipe } from "../types/recipes.types";
+import type { IRecipe } from "../types/recipes.types";
 
 const mealSchema = new Schema<IRecipe>({
   id: Number,
+  createdAt: Date,
+  updatedAt: Date,
   title: String,
   image: String,
   imageType: String,
@@ -70,35 +71,7 @@ const mealSchema = new Schema<IRecipe>({
   weightWatcherSmartPoints: Number,
   dishTypes: [String],
   extendedIngredients: [
-    {
-      id: Number,
-      aisle: String,
-      image: String,
-      consistency: String,
-      name: String,
-      localizedName: String,
-      original: String,
-      originalName: String,
-      originalString: String,
-      originalUnit: String,
-      unit: String,
-      unitShort: String,
-      amount: Number,
-      meta: [String],
-      metaInformation: [String],
-      measures: {
-        us: {
-          amount: Number,
-          unitShort: String,
-          unitLong: String,
-        },
-        metric: {
-          amount: Number,
-          unitShort: String,
-          unitLong: String,
-        },
-      },
-    },
+    { type: SchemaTypes.ObjectId, ref: "Ingredient", required: true },
   ],
   nutrition: {
     nutrients: [

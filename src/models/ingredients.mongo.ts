@@ -4,6 +4,8 @@ import type { IIngredient } from "../types/ingredients.types";
 
 const ingredientSchema = new Schema<IIngredient>({
   id: Number,
+  createdAt: Date,
+  updatedAt: Date,
   original: String,
   originalName: String,
   name: String,

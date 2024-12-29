@@ -1,23 +1,15 @@
 import mongoose from "mongoose";
 import { hashPassword } from "../services/hash";
-const { Schema, model, Document } = mongoose;
-
-export type IUser = {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  createdAt: Date;
-  lastActive: Date;
-} & Document;
+import { IUser } from "../types/users.types";
+const { Schema, model } = mongoose;
 
 const userSchema = new Schema<IUser>({
+  createdAt: Date,
+  updatedAt: Date,
   email: String,
   password: String,
   firstName: String,
   lastName: String,
-  createdAt: Date,
-  lastActive: Date,
 });
 
 userSchema.pre("save", async function (next) {

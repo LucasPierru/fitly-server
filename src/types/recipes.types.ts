@@ -1,3 +1,6 @@
+import { DefaultProperties } from "./common.types";
+import { IIngredient } from "./ingredients.types";
+
 export type RecipeSummary = {
   id: number;
   title: string;
@@ -118,7 +121,7 @@ export type DishTypes =
   | "snack"
   | "drink";
 
-export type IRecipe = {
+export type IRecipe = DefaultProperties & {
   vegetarian: boolean;
   vegan: boolean;
   ketogenic: boolean;
@@ -140,7 +143,7 @@ export type IRecipe = {
   license: string;
   sourceName: string;
   pricePerServing: number;
-  extendedIngredients: ExtendedIngredient[];
+  extendedIngredients: IIngredient[];
   id: number;
   title: string;
   readyInMinutes: number;

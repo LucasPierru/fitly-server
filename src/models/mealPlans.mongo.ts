@@ -1,11 +1,26 @@
-import mongoose from "mongoose";
+import mongoose, { SchemaTypes } from "mongoose";
+import { IMealPlan } from "../types/mealPlans.types";
 const { Schema, model } = mongoose;
 
-const conversationSchema = new Schema({
-  name: String,
+const mealPlanSchema = new Schema<IMealPlan>({
   createdAt: Date,
-  lastActive: Date,
+  updatedAt: Date,
+  name: String,
+  description: String,
+  meals: [
+    {
+      mealId: { type: SchemaTypes.ObjectId, ref: "Meal", required: false },
+      ingredientId: {
+        type: SchemaTypes.ObjectId,
+        ref: "Ingredient",
+        required: false,
+      },
+      quantity: Number,
+      dishType: String /*e.g.: breakfast, lunch, dinner, snack*/,
+    },
+  ],
+  userId: { type: SchemaTypes.ObjectId, ref: "User", required: true },
 });
 
-const Conversation = model("Conversation", conversationSchema);
-export default Conversation;
+const MealPlan = model("MealPlan", mealPlanSchema);
+export default MealPlan;
