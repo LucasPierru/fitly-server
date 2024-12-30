@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import User, { IUser } from "../../models/users.mongo";
+import User from "../../models/users.mongo";
 import { comparePasswords } from "../../services/hash";
 import jwt from "jsonwebtoken";
 
@@ -10,7 +10,9 @@ export const httpLogin = async (req: Request, res: Response) => {
     if (!user || !(await comparePasswords(password, user.password))) {
       res.status(400).json({ message: "Invalid credentials" });
     }
-    const token = jwt.sign({ id: user?._id, email }, process.env.JWT_SECRET!, { expiresIn: "24h" });
+    const token = jwt.sign({ id: user?._id, email }, process.env.JWT_SECRET!, {
+      expiresIn: "24h",
+    });
     res.json({ token });
   } catch (error) {
     res.status(500).json({ message: "Login failed", error });
@@ -42,7 +44,9 @@ export const httpRegister = async (req: Request, res: Response) => {
     });
 
     const user = await newUser.save();
-    const token = jwt.sign({ id: user._id, email }, process.env.JWT_SECRET!, { expiresIn: "24h" });
+    const token = jwt.sign({ id: user._id, email }, process.env.JWT_SECRET!, {
+      expiresIn: "24h",
+    });
     res.status(201).json({ token, message: "User created successfully" });
   } catch (error) {
     res.status(400).json({ message: "Registration failed", error });
