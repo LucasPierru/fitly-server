@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { DefaultProperties } from "./common.types";
 import { IIngredient } from "./ingredients.types";
 
@@ -143,7 +144,11 @@ export type IRecipe = DefaultProperties & {
   license: string;
   sourceName: string;
   pricePerServing: number;
-  extendedIngredients: IIngredient[];
+  extendedIngredients: {
+    ingredientId: mongoose.Types.ObjectId;
+    quantrity: number;
+    unit: string;
+  }[];
   id: number;
   title: string;
   readyInMinutes: number;

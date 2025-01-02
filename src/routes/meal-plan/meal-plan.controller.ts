@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import MealPlan from "../../models/mealPlans.mongo";
-import { IMealPlan } from "../../types/mealPlans.types";
+import { IMealPlanInsert } from "../../types/mealPlans.types";
+import { createMeals } from "../../services/meals";
 
 export const httpGetMealPlan = async (req: Request, res: Response) => {
   try {
@@ -23,23 +24,22 @@ export const httpGetMealPlans = async (req: Request, res: Response) => {
 };
 
 export const httpCreateMealPlan = async (
-  req: Request<{}, {}, IMealPlan>,
+  req: Request<{}, {}, IMealPlanInsert>,
   res: Response
 ) => {
   try {
     const { name, description, meals } = req.body;
-    const newMealPlan = new MealPlan({
+    const newMeals = createMeals(meals);
+    /* const newMealPlan = new MealPlan({
       name,
       description,
-      meals,
+      newMeals,
       userId: req.user!.id,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    const mealPlan = await newMealPlan.save();
-    res
-      .status(201)
-      .json({ mealPlan, message: "Meal plan created successfully" });
+    const mealPlan = await newMealPlan.save(); */
+    res.status(201).json({ message: "Meal plan created successfully" });
   } catch (error) {
     res.status(400).json({ message: "Meal plan creation failed", error });
   }

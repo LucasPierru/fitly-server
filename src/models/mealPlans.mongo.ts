@@ -17,6 +17,7 @@ const mealPlanSchema = new Schema<IMealPlan>({
       },
       quantity: Number,
       dishType: String /*e.g.: breakfast, lunch, dinner, snack*/,
+      day: String /*e.g.: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday*/,
     },
   ],
   userId: { type: SchemaTypes.ObjectId, ref: "User", required: true },

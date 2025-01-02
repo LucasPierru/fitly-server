@@ -71,7 +71,15 @@ const mealSchema = new Schema<IRecipe>({
   weightWatcherSmartPoints: Number,
   dishTypes: [String],
   extendedIngredients: [
-    { type: SchemaTypes.ObjectId, ref: "Ingredient", required: true },
+    {
+      ingredientId: {
+        type: SchemaTypes.ObjectId,
+        ref: "Ingredient",
+        required: true,
+      },
+      quantity: Number,
+      unit: String,
+    },
   ],
   nutrition: {
     nutrients: [

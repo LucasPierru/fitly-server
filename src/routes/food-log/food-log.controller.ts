@@ -8,7 +8,7 @@ export const httpGetFoodLogs = async (req: Request, res: Response) => {
     res.status(200).json({ foodLogs });
   } catch (error) {
     res.status(500).json({
-      message: `Cannot access user's food logs ${req.params.id}`,
+      message: `Cannot access user's food logs`,
       error,
     });
   }
