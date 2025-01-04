@@ -145,7 +145,7 @@ export type IRecipe = DefaultProperties & {
   sourceName: string;
   pricePerServing: number;
   extendedIngredients: {
-    ingredientId: mongoose.Types.ObjectId;
+    ingredientId: Number;
     quantrity: number;
     unit: string;
   }[];

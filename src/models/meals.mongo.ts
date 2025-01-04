@@ -72,11 +72,7 @@ const mealSchema = new Schema<IRecipe>({
   dishTypes: [String],
   extendedIngredients: [
     {
-      ingredientId: {
-        type: SchemaTypes.ObjectId,
-        ref: "Ingredient",
-        required: true,
-      },
+      ingredientId: Number,
       quantity: Number,
       unit: String,
     },

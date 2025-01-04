@@ -10,12 +10,10 @@ const mealPlanSchema = new Schema<IMealPlan>({
   meals: [
     {
       mealId: { type: SchemaTypes.ObjectId, ref: "Meal", required: false },
-      ingredientId: {
-        type: SchemaTypes.ObjectId,
-        ref: "Ingredient",
-        required: false,
-      },
+      ingredientId: Number,
       quantity: Number,
+      recipeId: Number,
+      unit: String,
       dishType: String /*e.g.: breakfast, lunch, dinner, snack*/,
       day: String /*e.g.: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday*/,
     },

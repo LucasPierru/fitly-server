@@ -6,12 +6,9 @@ const foodLogSchema = new Schema<IFoodLog>({
   createdAt: Date,
   updatedAt: Date,
   userId: { type: SchemaTypes.ObjectId, ref: "User", required: true },
-  ingredientId: {
-    type: SchemaTypes.ObjectId,
-    ref: "Ingredient",
-    required: false,
-  },
+  ingredientId: Number,
   quantity: Number,
+  recipeId: Number,
   mealId: { type: SchemaTypes.ObjectId, ref: "Meal", required: false },
   dishType: String, // e.g.: breakfast, lunch, dinner, snack
 });
