@@ -3,11 +3,11 @@ import {
   httpCreateWeightLog,
   httpGetWeightLogs,
 } from "./weight-log.controller";
-import authMiddleware from "../../middleware/authMiddleware";
+import passportMiddleware from "../../middleware/passportMiddleware";
 
 const weightLogRouter = express.Router();
 
 weightLogRouter.get("/all", httpGetWeightLogs);
-weightLogRouter.post("/create", authMiddleware, httpCreateWeightLog);
+weightLogRouter.post("/create", passportMiddleware, httpCreateWeightLog);
 
 export default weightLogRouter;

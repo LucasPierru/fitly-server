@@ -4,12 +4,12 @@ import {
   httpGetMealPlan,
   httpGetMealPlans,
 } from "./meal-plan.controller";
-import authMiddleware from "../../middleware/authMiddleware";
+import passportMiddleware from "../../middleware/passportMiddleware";
 
 const mealPlanRouter = express.Router();
 
-mealPlanRouter.get("/details/:id", authMiddleware, httpGetMealPlan);
+mealPlanRouter.get("/details/:id", passportMiddleware, httpGetMealPlan);
 mealPlanRouter.get("/all", httpGetMealPlans);
-mealPlanRouter.post("/create", authMiddleware, httpCreateMealPlan);
+mealPlanRouter.post("/create", passportMiddleware, httpCreateMealPlan);
 
 export default mealPlanRouter;

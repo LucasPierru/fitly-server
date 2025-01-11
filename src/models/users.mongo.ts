@@ -10,6 +10,19 @@ const userSchema = new Schema<IUser>({
   password: String,
   firstName: String,
   lastName: String,
+  weight: Number,
+  height: Number,
+  birthday: Date,
+  sex: { type: String, enum: ["male", "female"] },
+  bmr: Number,
+  howActive: {
+    type: String,
+    enum: ["sedentary", "light", "moderate", "active", "very_active"],
+  },
+  goal: {
+    type: String,
+    enum: ["fat_loss", "muscle_gain", "improve_stamina", "maintenance"],
+  },
 });
 
 userSchema.pre("save", async function (next) {

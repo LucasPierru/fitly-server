@@ -3,11 +3,11 @@ import {
   httpGetFavoriteMeals,
   httpCreateFavoriteMeal,
 } from "./favorite-meal.controller";
-import authMiddleware from "../../middleware/authMiddleware";
+import passportMiddleware from "../../middleware/passportMiddleware";
 
 const favoriteMealRouter = express.Router();
 
-favoriteMealRouter.get("/", authMiddleware, httpGetFavoriteMeals);
-favoriteMealRouter.post("/create", authMiddleware, httpCreateFavoriteMeal);
+favoriteMealRouter.get("/", passportMiddleware, httpGetFavoriteMeals);
+favoriteMealRouter.post("/create", passportMiddleware, httpCreateFavoriteMeal);
 
 export default favoriteMealRouter;

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../../models/users.mongo";
 import { comparePasswords } from "../../services/hash";
 import jwt from "jsonwebtoken";
+import "dotenv/config";
 
 export const httpLogin = async (req: Request, res: Response) => {
   try {
@@ -13,9 +14,16 @@ export const httpLogin = async (req: Request, res: Response) => {
     const token = jwt.sign({ id: user?._id, email }, process.env.JWT_SECRET!, {
       expiresIn: "24h",
     });
-    res.json({ token });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      maxAge: 3600 * 1000 * 24,
+      path: "/",
+    });
+    res.json({ token, message: "Login succesful", error: null });
   } catch (error) {
-    res.status(500).json({ message: "Login failed", error });
+    res.status(500).json({ token: null, message: "Login failed", error });
   }
 };
 

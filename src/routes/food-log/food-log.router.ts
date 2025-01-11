@@ -1,10 +1,10 @@
 import express from "express";
 import { httpCreateFoodLog, httpGetFoodLogs } from "./food-log.controller";
-import authMiddleware from "../../middleware/authMiddleware";
+import passportMiddleware from "../../middleware/passportMiddleware";
 
 const foodLogRouter = express.Router();
 
 foodLogRouter.get("/all", httpGetFoodLogs);
-foodLogRouter.post("/create", authMiddleware, httpCreateFoodLog);
+foodLogRouter.post("/create", passportMiddleware, httpCreateFoodLog);
 
 export default foodLogRouter;
