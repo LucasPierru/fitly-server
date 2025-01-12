@@ -22,7 +22,7 @@ export type IUser = DefaultProperties & {
   lastName: string;
   height: number;
   weight: number;
-  birthday?: Date;
+  birthday?: string;
   bmr?: number;
   sex: Sex;
   howActive: HowActive;

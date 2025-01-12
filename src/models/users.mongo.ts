@@ -12,7 +12,7 @@ const userSchema = new Schema<IUser>({
   lastName: String,
   weight: Number,
   height: Number,
-  birthday: Date,
+  birthday: String,
   sex: { type: String, enum: ["male", "female"] },
   bmr: Number,
   howActive: {
