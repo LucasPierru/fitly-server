@@ -27,13 +27,14 @@ export const httpCreateMeal = async (
   res: Response
 ) => {
   try {
-    const newMeal = new Meal({
+    console.log({ meal: req.body });
+    /* const newMeal = new Meal({
       ...req.body,
       createdAt: new Date(),
       updatedAt: new Date(),
-    });
-    const meal = await newMeal.save();
-    res.status(201).json({ meal, message: "Meal created successfully" });
+    }); */
+    /* const meal = await newMeal.save(); */
+    res.status(201).json({ /* meal, */ message: "Meal created successfully" });
   } catch (error) {
     res.status(400).json({ message: "Meal creation failed", error });
   }
