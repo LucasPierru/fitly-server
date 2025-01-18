@@ -153,7 +153,6 @@ export type IRecipe = DefaultProperties & {
   title: string;
   readyInMinutes: number;
   servings: number;
-  sourceUrl: string;
   image: string;
   imageType: string;
   nutrition: Nutrition;
@@ -164,8 +163,5 @@ export type IRecipe = DefaultProperties & {
   occasions: string[];
   instructions: string;
   analyzedInstructions: AnalyzedInstruction[];
-  originalId: null;
-  spoonacularScore: number;
-  spoonacularSourceUrl: string;
   winePairing: WinePairing;
 };
