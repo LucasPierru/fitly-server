@@ -127,22 +127,15 @@ export type IRecipe = DefaultProperties & {
   vegan: boolean;
   ketogenic: boolean;
   glutenFree: boolean;
-  whole30: boolean;
   dairyFree: boolean;
   veryHealthy: boolean;
   cheap: boolean;
   veryPopular: boolean;
   sustainable: boolean;
   lowFodmap: boolean;
-  weightWatcherSmartPoints: number;
-  gaps: string;
   preparationMinutes: number;
   cookingMinutes: number;
-  aggregateLikes: number;
-  healthScore: number;
-  creditsText: string;
-  license: string;
-  sourceName: string;
+  likes: number;
   pricePerServing: number;
   extendedIngredients: {
     ingredientId: Number;
@@ -154,14 +147,10 @@ export type IRecipe = DefaultProperties & {
   readyInMinutes: number;
   servings: number;
   image: string;
-  imageType: string;
   nutrition: Nutrition;
   summary: string;
   cuisines: string[];
   dishTypes: DishTypes[];
   diets: string[];
-  occasions: string[];
-  instructions: string;
   analyzedInstructions: AnalyzedInstruction[];
-  winePairing: WinePairing;
 };
