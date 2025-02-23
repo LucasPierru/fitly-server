@@ -1,5 +1,5 @@
 {
-  "name": "messenger-server",
+  "name": "fitly-server",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
