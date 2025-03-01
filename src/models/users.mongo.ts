@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { hashPassword } from "../services/hash";
-import { IUser } from "../types/users.types";
+import { IUser } from "../types";
 const { Schema, model } = mongoose;
 
 const userSchema = new Schema<IUser>({

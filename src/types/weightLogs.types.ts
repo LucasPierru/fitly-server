@@ -1,8 +1,9 @@
-import mongoose from "mongoose";
+import { Types } from "mongoose";
 import { DefaultProperties } from "./common.types";
+import { IUser } from "./users.types";
 
 export type IWeightLog = DefaultProperties & {
-  userId: mongoose.Types.ObjectId;
+  user: Types.ObjectId | IUser;
   weight: number;
   bodyFatPercentage: number;
 };

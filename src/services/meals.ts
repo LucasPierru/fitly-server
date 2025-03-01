@@ -1,7 +1,7 @@
 import Meal from "../models/meals.mongo";
-import { IRecipe } from "../types/recipes.types";
+import { IMeal } from "../types/meals.types";
 
-export const createMeal = async (mealData: IRecipe): Promise<IRecipe> => {
+export const createMeal = async (mealData: IMeal): Promise<IMeal> => {
   try {
     const newMeal = new Meal({
       ...mealData,

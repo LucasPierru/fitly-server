@@ -1,11 +1,14 @@
-import mongoose from "mongoose";
+import { Types } from "mongoose";
 import { DefaultProperties } from "./common.types";
+import { IUser } from "./users.types";
+import { IIngredient } from "./ingredients.types";
+import { IMeal } from "./meals.types";
 
 export type IFoodLog = DefaultProperties & {
-  userId: mongoose.Types.ObjectId;
-  ingredientId?: number;
+  user: Types.ObjectId | IUser;
+  ingredient?: Types.ObjectId | IIngredient;
   quantity?: number;
-  recipeId?: number;
-  mealId?: mongoose.Types.ObjectId;
+  unit?: string;
+  meal?: Types.ObjectId | IMeal;
   dishType: string; // e.g.: breakfast, lunch, dinner, snack
 };

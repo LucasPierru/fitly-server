@@ -3,8 +3,6 @@ import jwt from "jsonwebtoken";
 import app from "./app";
 import { Server, Socket } from "socket.io";
 import { mongoConnect } from "./services/mongo";
-import foundationDownload from "./data/foundationDownload.json";
-import srDownload from "./data/FoodData_Central_sr_legacy_food_json_2021-10-28.json";
 import { importIngredients } from "./lib/importIngredients";
 
 const server = createServer(app);
@@ -57,8 +55,7 @@ const startServer = async () => {
 
   server.listen(4000, () => {
     console.log(`Server running in 4000`);
-    importIngredients();
-    // console.log(foundationDownload.FoundationFoods[1].foodNutrients[1]);
+    //importIngredients();
   });
 };
 

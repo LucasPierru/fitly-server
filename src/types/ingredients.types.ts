@@ -1,56 +1,33 @@
+import { Types } from "mongoose";
 import { DefaultProperties } from "./common.types";
+import { IIngredientCategory } from "./ingredientCategories.types";
 
-export type FoodInformation = {
-  id: number;
-  name: string;
-  image: string;
-  aisle: string;
-  possibleUnits: string[];
-};
-
-export type Unit = string;
-
-export type CaloricBreakdown = {
-  percentProtein: number;
-  percentFat: number;
-  percentCarbs: number;
-};
-export type WeightPerServing = {
+export type AlternateUnit = {
   amount: number;
-  unit: Unit;
-};
-export type Flavonoid = {
-  name: string;
-  amount: number;
-  unit: Unit;
-  percentOfDailyNeeds?: number;
+  unit: string;
+  gramWeight: number;
 };
 
-export type Nutrition = {
-  nutrients: Flavonoid[];
-  properties: Flavonoid[];
-  flavonoids: Flavonoid[];
-  caloricBreakdown: CaloricBreakdown;
-  weightPerServing: WeightPerServing;
-};
-
-export type EstimatedCost = {
+export type Cost = {
   value: number;
   unit: string;
 };
 
-export type IIngredient = DefaultProperties &
-  FoodInformation & {
-    original: string;
-    originalName: string;
-    amount: number;
-    unit: string;
-    unitShort: Unit;
-    unitLong: string;
-    estimatedCost: EstimatedCost;
-    consistency: string;
-    shoppingListUnits: string[];
-    meta: [];
-    nutrition: Nutrition;
-    categoryPath: string[];
-  };
+export type Nutrient = {
+  name: string;
+  amount: number;
+  unit: string;
+};
+
+export type IIngredient = DefaultProperties & {
+  usdaId: number;
+  name: string;
+  amount: number;
+  unit: string;
+  unitShort: string;
+  alternateUnits: AlternateUnit[];
+  estimatedCost: Cost;
+  image: string;
+  category: Types.ObjectId | IIngredientCategory;
+  nutrients: Nutrient[];
+};

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Meal from "../../models/meals.mongo";
-import { IRecipe } from "../../types/recipes.types";
+import { IMeal } from "../../types/meals.types";
 
 export const httpGetMeal = async (req: Request, res: Response) => {
   try {
@@ -23,7 +23,7 @@ export const httpGetMeals = async (req: Request, res: Response) => {
 };
 
 export const httpCreateMeal = async (
-  req: Request<{}, {}, IRecipe>,
+  req: Request<{}, {}, IMeal>,
   res: Response
 ) => {
   try {

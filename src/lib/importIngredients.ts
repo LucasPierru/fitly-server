@@ -5,12 +5,16 @@ import {
   FoundationFood,
   UnitName,
 } from "../types/data/foundationFood.types";
-import { SRLegacy } from "../types/data/srLegacyFood.types";
+import { SRLegacy, SRLegacyFood } from "../types/data/srLegacyFood.types";
 import { httpCreateIngredientCategory } from "../routes/ingredient-category/ingredient-category.controller";
 import IngredientCategory from "../models/ingredientCategories.mongo";
 import Ingredient from "../models/ingredients.mongo";
+import { createIngredientCategory } from "../services/ingredient-categories/create-category";
+import { createIngredients } from "../services/ingredients/create-ingredients";
+import { Nutrient } from "../types/ingredients.types";
+import { convertGramsToUnit } from "./utils";
 
-const calculateCalories = (food: FoundationFood) => {
+const calculateCalories = (food: FoundationFood | SRLegacyFood) => {
   if (
     !food.foodNutrients.find((nutrient) => nutrient.nutrient.name === "Energy")
   ) {
@@ -66,6 +70,13 @@ export const importIngredients = async () => {
     .FoundationFoods;
   const srFoods = (srDownload as SRLegacy).SRLegacyFoods;
 
+  const alternateUnitsSet = new Set();
+  const alternateUnits = srFoods.map((food) =>
+    food.foodPortions.flatMap((portion) =>
+      alternateUnitsSet.add(portion.modifier)
+    )
+  );
+
   const ingredients = await Promise.all(
     foundationFoods.map(async (food) => {
       let energyNutrients = null;
@@ -93,13 +104,8 @@ export const importIngredients = async () => {
         });
       if (energyNutrients) nutrients.push(energyNutrients);
 
-      const ingredientCategory = await IngredientCategory.findOneAndUpdate(
-        { name: food.foodCategory.description },
-        {
-          $set: { name: food.foodCategory.description, updatedAt: new Date() },
-          $setOnInsert: { createdAt: new Date() },
-        },
-        { upsert: true, new: true }
+      const ingredientCategory = await createIngredientCategory(
+        food.foodCategory.description
       );
 
       return {
@@ -114,6 +120,14 @@ export const importIngredients = async () => {
             gramWeight: portion.gramWeight,
           };
         }),
+        amount: 100,
+        unit: "grams",
+        unitShort: "g",
+        estimatedCost: {
+          value: 0,
+          unit: "USD",
+        },
+        image: "",
         nutrients: food.foodNutrients
           .filter((nutrient) =>
             nutrientSelection.includes(nutrient.nutrient.name)
@@ -121,7 +135,79 @@ export const importIngredients = async () => {
           .map((nutrient) => {
             return {
               name: nutrient.nutrient.name,
-              amount: nutrient.amount,
+              amount: nutrient.amount!,
+              unit: nutrient.nutrient.unitName,
+            };
+          }),
+      };
+    })
+  );
+  const srIngredients = await Promise.all(
+    srFoods.map(async (food) => {
+      let energyNutrients: Nutrient | null = null;
+      if (
+        !food.foodNutrients.find(
+          (nutrient) => nutrient.nutrient.name === "Energy"
+        )
+      ) {
+        energyNutrients = {
+          name: "Energy",
+          amount: calculateCalories(food),
+          unit: "kcal" as UnitName,
+        };
+      }
+      const nutrients = food.foodNutrients
+        .filter((nutrient) =>
+          nutrientSelection.includes(nutrient.nutrient.name)
+        )
+        .map((nutrient) => {
+          return {
+            name: nutrient.nutrient.name,
+            amount: nutrient.amount,
+            unit: nutrient.nutrient.unitName,
+          };
+        });
+      if (energyNutrients) nutrients.push(energyNutrients);
+
+      const ingredientCategory = await createIngredientCategory(
+        food.foodCategory.description
+      );
+
+      return {
+        usdaId: food.fdcId,
+        name: food.description,
+        dataSource: "Foundation",
+        category: ingredientCategory._id,
+        alternateUnits: food.foodPortions.map((portion) => {
+          const amount = portion.amount
+            ? portion.amount
+            : convertGramsToUnit(portion.modifier, portion.gramWeight);
+          const unit =
+            portion.measureUnit.name !== "undetermined"
+              ? portion.measureUnit.name
+              : portion.modifier;
+          return {
+            amount: amount,
+            unit: unit,
+            gramWeight: portion.gramWeight,
+          };
+        }),
+        amount: 100,
+        unit: "grams",
+        unitShort: "g",
+        estimatedCost: {
+          value: 0,
+          unit: "USD",
+        },
+        image: "",
+        nutrients: food.foodNutrients
+          .filter((nutrient) =>
+            nutrientSelection.includes(nutrient.nutrient.name)
+          )
+          .map((nutrient) => {
+            return {
+              name: nutrient.nutrient.name,
+              amount: nutrient.amount!,
               unit: nutrient.nutrient.unitName,
             };
           }),
@@ -134,20 +220,8 @@ export const importIngredients = async () => {
       nutrientsSet.add(nutrient.nutrient.name)
     )
   );
-  const operations = ingredients.map((ingredient: any) => {
-    return {
-      updateOne: {
-        filter: { name: ingredient.name },
-        update: {
-          $set: { ...ingredient, updatedAt: new Date() },
-          $setOnInsert: { createdAt: new Date() },
-        },
-        upsert: true,
-      },
-    };
-  });
 
-  const newIngredients = await Ingredient.bulkWrite(operations);
-  //console.log({ ingredients });
+  const newIngredients = await createIngredients(ingredients);
+  const newIngredientsSR = await createIngredients(srIngredients);
   return newIngredients;
 };

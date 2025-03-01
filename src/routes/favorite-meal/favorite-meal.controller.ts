@@ -4,8 +4,8 @@ import { IFavoriteMeal } from "../../types/favoriteMeals.types";
 
 export const httpGetFavoriteMeals = async (req: Request, res: Response) => {
   try {
-    const foodLogs = await FavoriteMeal.find({ userId: req.user!.id });
-    res.status(200).json({ foodLogs });
+    const favoriteMeals = await FavoriteMeal.find({ user: req.user!.id });
+    res.status(200).json({ favoriteMeals });
   } catch (error) {
     res.status(500).json({
       message: `Cannot access user's favorite meals`,
@@ -20,8 +20,8 @@ export const httpCreateFavoriteMeal = async (
 ) => {
   try {
     const newFavoriteMeal = new FavoriteMeal({
-      mealId: req.body.mealId,
-      userId: req.user!.id,
+      meal: req.body.meal,
+      user: req.user!.id,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -31,5 +31,20 @@ export const httpCreateFavoriteMeal = async (
       .json({ favoriteMeal, message: "Favorite meal created successfully" });
   } catch (error) {
     res.status(400).json({ message: "Favorite meal creation failed", error });
+  }
+};
+
+export const httpDeleteFavoriteMeal = async (req: Request, res: Response) => {
+  try {
+    const deleteFavoriteMeal = await FavoriteMeal.findOneAndDelete({
+      meal: req.params.mealId,
+      user: req.user!.id,
+    });
+    res.status(201).json({
+      deleteFavoriteMeal,
+      message: "Favorite meal deleted successfully",
+    });
+  } catch (error) {
+    res.status(400).json({ message: "Favorite meal deletion failed", error });
   }
 };

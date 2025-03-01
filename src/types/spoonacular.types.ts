@@ -1,4 +1,4 @@
 import { IIngredient } from "./ingredients.types";
-import { IRecipe } from "./recipes.types";
+import { IMeal } from "./meals.types";
 
-export type Recipe = IRecipe & { extendedIngredients: IIngredient[] };
+export type Recipe = IMeal & { extendedIngredients: IIngredient[] };

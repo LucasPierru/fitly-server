@@ -1,15 +1,19 @@
 import mongoose, { SchemaTypes } from "mongoose";
-import { IFoodLog } from "../types/foodLogs.types";
+import { IFoodLog } from "../types";
 const { Schema, model } = mongoose;
 
 const foodLogSchema = new Schema<IFoodLog>({
   createdAt: Date,
   updatedAt: Date,
-  userId: { type: SchemaTypes.ObjectId, ref: "User", required: true },
-  ingredientId: Number,
+  user: { type: SchemaTypes.ObjectId, ref: "User", required: true },
+  ingredient: {
+    type: SchemaTypes.ObjectId,
+    ref: "Ingredient",
+    required: false,
+  },
   quantity: Number,
-  recipeId: Number,
-  mealId: { type: SchemaTypes.ObjectId, ref: "Meal", required: false },
+  unit: String,
+  meal: { type: SchemaTypes.ObjectId, ref: "Meal", required: false },
   dishType: String, // e.g.: breakfast, lunch, dinner, snack
 });
 

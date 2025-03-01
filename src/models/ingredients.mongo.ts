@@ -1,8 +1,8 @@
 import mongoose, { SchemaTypes } from "mongoose";
 const { Schema, model } = mongoose;
-import type { IIngredient } from "../types/ingredients.types";
+import type { IIngredient } from "../types";
 
-const ingredientSchema = new Schema({
+const ingredientSchema = new Schema<IIngredient>({
   usdaId: Number,
   createdAt: Date,
   updatedAt: Date,
@@ -22,7 +22,6 @@ const ingredientSchema = new Schema({
     unit: String,
   },
   image: String,
-  meta: [String],
   category: {
     type: SchemaTypes.ObjectId,
     ref: "IngredientCategorie",
@@ -38,5 +37,5 @@ const ingredientSchema = new Schema({
   ],
 });
 
-const Ingredient = model("Ingredient", ingredientSchema);
+const Ingredient = model<IIngredient>("Ingredient", ingredientSchema);
 export default Ingredient;

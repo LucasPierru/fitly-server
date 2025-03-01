@@ -1,9 +1,11 @@
-import mongoose from "mongoose";
+import { Types } from "mongoose";
 import { DefaultProperties } from "./common.types";
+import { IIngredient } from "./ingredients.types";
+import { IMeal } from "./meals.types";
+import { IUser } from "./users.types";
 
 export type IFavoriteMeal = DefaultProperties & {
-  userId: mongoose.Types.ObjectId;
-  mealId: mongoose.Types.ObjectId;
-  recipeId: number;
-  ingredientId: number;
+  user: Types.ObjectId | IUser;
+  meal: Types.ObjectId | IMeal;
+  ingredient: Types.ObjectId | IIngredient;
 };

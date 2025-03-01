@@ -42,7 +42,7 @@ export const createIngredients = async (
   try {
     const bulkOperations = ingredientsData.map((ingredient) => ({
       updateOne: {
-        filter: { id: ingredient.id },
+        filter: { name: ingredient.name },
         update: { $set: ingredient },
         upsert: true,
       },

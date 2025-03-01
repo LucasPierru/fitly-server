@@ -31,3 +31,34 @@ export const httpCreateFoodLog = async (
     res.status(400).json({ message: "Food log creation failed", error });
   }
 };
+
+export const httpUpdateFoodLog = async (
+  req: Request<{}, {}, IFoodLog>,
+  res: Response
+) => {
+  try {
+    const foodLog = await FoodLog.findOneAndUpdate(
+      { _id: req.body._id },
+      {
+        ...req.body,
+        updatedAt: new Date(),
+      }
+    );
+    res.status(201).json({ foodLog, message: "Food log updated successfully" });
+  } catch (error) {
+    res.status(400).json({ message: "Food log update failed", error });
+  }
+};
+
+export const httpDeleteFoodLog = async (req: Request, res: Response) => {
+  try {
+    const foodLogDeleted = await FoodLog.findOneAndDelete({
+      _id: req.params.foodLogId,
+    });
+    res
+      .status(201)
+      .json({ foodLogDeleted, message: "Food log deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ message: "Food log deletion failed", error });
+  }
+};

@@ -1,9 +1,8 @@
 import mongoose, { SchemaTypes } from "mongoose";
 const { Schema, model } = mongoose;
-import type { IRecipe } from "../types/recipes.types";
+import type { IMeal } from "../types";
 
-const mealSchema = new Schema<IRecipe>({
-  id: Number,
+const mealSchema = new Schema<IMeal>({
   createdAt: Date,
   updatedAt: Date,
   title: String,
@@ -13,9 +12,10 @@ const mealSchema = new Schema<IRecipe>({
   preparationMinutes: Number,
   cookingMinutes: Number,
   pricePerServing: Number,
-  analyzedInstructions: [
+  instructions: [
     {
       name: String,
+      step: Number,
     },
   ],
   cheap: Boolean,
@@ -30,21 +30,19 @@ const mealSchema = new Schema<IRecipe>({
   veryHealthy: Boolean,
   veryPopular: Boolean,
   dishTypes: [String],
-  extendedIngredients: [
+  ingredients: [
     {
-      ingredientId: Number,
+      ingredient: {
+        type: SchemaTypes.ObjectId,
+        ref: "Ingredient",
+        required: true,
+      },
       quantity: Number,
       unit: String,
     },
   ],
-  nutrition: {
-    calories: Number,
-    protein: Number,
-    carbs: Number,
-    fat: Number,
-  },
   summary: String,
 });
 
-const Meal = model<IRecipe>("Meal", mealSchema);
+const Meal = model<IMeal>("Meal", mealSchema);
 export default Meal;

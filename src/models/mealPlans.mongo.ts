@@ -1,5 +1,5 @@
 import mongoose, { SchemaTypes } from "mongoose";
-import { IMealPlan } from "../types/mealPlans.types";
+import { IMealPlan } from "../types";
 const { Schema, model } = mongoose;
 
 const mealPlanSchema = new Schema<IMealPlan>({
@@ -9,16 +9,19 @@ const mealPlanSchema = new Schema<IMealPlan>({
   description: String,
   meals: [
     {
-      mealId: { type: SchemaTypes.ObjectId, ref: "Meal", required: false },
-      ingredientId: Number,
+      meal: { type: SchemaTypes.ObjectId, ref: "Meal", required: false },
+      ingredient: {
+        type: SchemaTypes.ObjectId,
+        ref: "Ingredient",
+        required: false,
+      },
       quantity: Number,
-      recipeId: Number,
       unit: String,
       dishType: String /*e.g.: breakfast, lunch, dinner, snack*/,
       day: String /*e.g.: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday*/,
     },
   ],
-  userId: { type: SchemaTypes.ObjectId, ref: "User", required: true },
+  user: { type: SchemaTypes.ObjectId, ref: "User", required: true },
 });
 
 const MealPlan = model("MealPlan", mealPlanSchema);

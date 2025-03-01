@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import User from "../../models/users.mongo";
-import { comparePasswords } from "../../services/hash";
+import { comparePasswords, hashPassword } from "../../services/hash";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 
@@ -56,6 +56,22 @@ export const httpRegister = async (req: Request, res: Response) => {
       expiresIn: "24h",
     });
     res.status(201).json({ token, message: "User created successfully" });
+  } catch (error) {
+    res.status(400).json({ message: "Registration failed", error });
+  }
+};
+
+export const httpUpdatePassword = async (req: Request, res: Response) => {
+  try {
+    const { password } = req.body;
+    const hashedPassword = await hashPassword(password);
+    const user = await User.findOneAndUpdate(
+      { _id: req.user?.id },
+      { password: hashedPassword }
+    );
+    res
+      .status(201)
+      .json({ id: user?.id, message: "Password updated successfully" });
   } catch (error) {
     res.status(400).json({ message: "Registration failed", error });
   }
