@@ -1,62 +1,42 @@
-import mongoose from "mongoose";
+import mongoose, { SchemaTypes } from "mongoose";
 const { Schema, model } = mongoose;
 import type { IIngredient } from "../types/ingredients.types";
 
-const ingredientSchema = new Schema<IIngredient>({
-  id: Number,
+const ingredientSchema = new Schema({
+  usdaId: Number,
   createdAt: Date,
   updatedAt: Date,
-  original: String,
-  originalName: String,
   name: String,
   amount: Number,
   unit: String,
   unitShort: String,
-  possibleUnits: [String],
+  alternateUnits: [
+    {
+      amount: Number,
+      unit: String,
+      gramWeight: Number,
+    },
+  ],
   estimatedCost: {
     value: Number,
     unit: String,
   },
-  consistency: String,
-  shoppingListUnits: [String],
-  aisle: String,
   image: String,
   meta: [String],
-  nutrition: {
-    nutrients: [
-      {
-        name: String,
-        amount: Number,
-        unit: String,
-        percentOfDailyNeeds: Number,
-      },
-    ],
-    properties: [
-      {
-        name: String,
-        amount: Number,
-        unit: String,
-      },
-    ],
-    flavonoids: [
-      {
-        name: String,
-        amount: Number,
-        unit: String,
-      },
-    ],
-    caloricBreakdown: {
-      percentProtein: Number,
-      percentFat: Number,
-      percentCarbs: Number,
-    },
-    weightPerServing: {
+  category: {
+    type: SchemaTypes.ObjectId,
+    ref: "IngredientCategorie",
+    required: true,
+  },
+  nutrients: [
+    {
+      name: String,
       amount: Number,
       unit: String,
+      percentOfDailyNeeds: Number,
     },
-  },
-  categoryPath: [String],
+  ],
 });
 
-const Ingredient = model<IIngredient>("Ingredient", ingredientSchema);
+const Ingredient = model("Ingredient", ingredientSchema);
 export default Ingredient;
