@@ -48,7 +48,6 @@ export const httpRegister = async (req: Request, res: Response) => {
       password,
       firstName,
       lastName,
-      createdAt: new Date(),
     });
 
     const user = await newUser.save();
@@ -65,13 +64,8 @@ export const httpUpdatePassword = async (req: Request, res: Response) => {
   try {
     const { password } = req.body;
     const hashedPassword = await hashPassword(password);
-    const user = await User.findOneAndUpdate(
-      { _id: req.user?.id },
-      { password: hashedPassword }
-    );
-    res
-      .status(201)
-      .json({ id: user?.id, message: "Password updated successfully" });
+    const user = await User.findOneAndUpdate({ _id: req.user?.id }, { password: hashedPassword });
+    res.status(201).json({ id: user?.id, message: "Password updated successfully" });
   } catch (error) {
     res.status(400).json({ message: "Registration failed", error });
   }

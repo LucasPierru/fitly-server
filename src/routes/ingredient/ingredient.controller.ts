@@ -28,9 +28,7 @@ export const httpSearchIngredient = async (req: Request, res: Response) => {
   } */
 
   try {
-    const ingredients = await Ingredient.find(query)
-      .limit(5)
-      .populate("category");
+    const ingredients = await Ingredient.find(query).limit(5).populate("category");
     res.status(200).json({ ingredients, error: null, message: "success" });
   } catch (error) {
     res.status(500).json({ ingredients: null, error, message: "error" });
@@ -45,8 +43,7 @@ export const httpCreateIngredients = async (req: Request, res: Response) => {
         updateOne: {
           filter: { name: ingredient.name },
           update: {
-            $set: { ...ingredient, updatedAt: new Date() },
-            $setOnInsert: { createdAt: new Date() },
+            $set: ingredient,
           },
           upsert: true,
         },

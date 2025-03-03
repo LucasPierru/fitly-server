@@ -20,8 +20,6 @@ export const httpCreateFavoriteMeal = async (req: Request<{}, {}, IFavoriteMeal>
     const newFavoriteMeal = new FavoriteMeal({
       meal: req.body.meal,
       user: req.user!.id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     const favoriteMeal = await newFavoriteMeal.save();
     res.status(201).json({

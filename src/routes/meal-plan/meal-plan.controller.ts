@@ -25,8 +25,8 @@ export const httpCreateMealPlan = async (req: Request<{}, {}, IMealPlan>, res: R
     const mealPlan = await MealPlan.findOneAndUpdate(
       { _id: req.body._id },
       {
-        $set: { ...req.body, updatedAt: new Date() },
-        $setOnInsert: { createdAt: new Date(), user: req.user!.id },
+        $set: req.body,
+        $setOnInsert: { user: req.user!.id },
       },
       { upsert: true, new: true }
     );

@@ -54,5 +54,5 @@ export type IMeal = DefaultProperties & {
   diets: string[];
   instructions: Instruction[];
   isPublic: boolean;
-  user: Types.ObjectId | IUser;
+  creator: Types.ObjectId | IUser;
 };

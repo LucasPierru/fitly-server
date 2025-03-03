@@ -1,17 +1,14 @@
 import Ingredient from "../../models/ingredients.mongo";
 import { IIngredient } from "../../types/ingredients.types";
 
-export const createIngredients = async (
-  ingredients: Omit<IIngredient, "createdAt" | "updatedAt">[]
-) => {
+export const createIngredients = async (ingredients: Omit<IIngredient, "createdAt" | "updatedAt">[]) => {
   try {
     const operations = ingredients.map((ingredient: any) => {
       return {
         updateOne: {
           filter: { name: ingredient.name },
           update: {
-            $set: { ...ingredient, updatedAt: new Date() },
-            $setOnInsert: { createdAt: new Date() },
+            $set: ingredient,
           },
           upsert: true,
         },

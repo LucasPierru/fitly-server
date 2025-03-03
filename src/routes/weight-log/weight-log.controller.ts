@@ -20,8 +20,6 @@ export const httpCreateWeightLog = async (req: Request<{}, {}, IWeightLog>, res:
     const newWeightLog = new WeightLog({
       ...req.body,
       user: req.user!.id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     const weightLog = await newWeightLog.save();
     res.status(201).json({ weightLog, message: "Weight log created successfully" });
@@ -36,7 +34,6 @@ export const httpUpdateWeightLog = async (req: Request<{}, {}, IWeightLog>, res:
       { _id: req.body._id },
       {
         ...req.body,
-        updatedAt: new Date(),
       }
     );
     res.status(201).json({ weightLog, error: null, message: "success" });

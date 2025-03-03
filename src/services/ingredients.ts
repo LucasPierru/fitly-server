@@ -20,14 +20,10 @@ export const getIngredientInformation = async (
   }
 };
 
-export const createIngredient = async (
-  ingredientData: IIngredient
-): Promise<IIngredient> => {
+export const createIngredient = async (ingredientData: IIngredient): Promise<IIngredient> => {
   try {
     const newIngredient = new Ingredient({
       ...ingredientData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     const ingredient = await newIngredient.save();
     return ingredient;
@@ -36,9 +32,7 @@ export const createIngredient = async (
   }
 };
 
-export const createIngredients = async (
-  ingredientsData: IIngredient[]
-): Promise<BulkWriteResult> => {
+export const createIngredients = async (ingredientsData: IIngredient[]): Promise<BulkWriteResult> => {
   try {
     const bulkOperations = ingredientsData.map((ingredient) => ({
       updateOne: {

@@ -2,27 +2,28 @@ import mongoose, { SchemaTypes } from "mongoose";
 import { IMealPlan } from "../types";
 const { Schema, model } = mongoose;
 
-const mealPlanSchema = new Schema<IMealPlan>({
-  createdAt: Date,
-  updatedAt: Date,
-  name: String,
-  description: String,
-  meals: [
-    {
-      meal: { type: SchemaTypes.ObjectId, ref: "Meal", required: false },
-      ingredient: {
-        type: SchemaTypes.ObjectId,
-        ref: "Ingredient",
-        required: false,
+const mealPlanSchema = new Schema<IMealPlan>(
+  {
+    name: String,
+    description: String,
+    meals: [
+      {
+        meal: { type: SchemaTypes.ObjectId, ref: "Meal", required: false },
+        ingredient: {
+          type: SchemaTypes.ObjectId,
+          ref: "Ingredient",
+          required: false,
+        },
+        quantity: Number,
+        unit: String,
+        dishType: String /*e.g.: breakfast, lunch, dinner, snack*/,
+        day: String /*e.g.: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday*/,
       },
-      quantity: Number,
-      unit: String,
-      dishType: String /*e.g.: breakfast, lunch, dinner, snack*/,
-      day: String /*e.g.: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday*/,
-    },
-  ],
-  user: { type: SchemaTypes.ObjectId, ref: "User", required: true },
-});
+    ],
+    user: { type: SchemaTypes.ObjectId, ref: "User", required: true },
+  },
+  { timestamps: true }
+);
 
 const MealPlan = model("MealPlan", mealPlanSchema);
 export default MealPlan;

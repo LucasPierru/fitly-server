@@ -20,8 +20,6 @@ export const httpCreateFoodLog = async (req: Request<{}, {}, IFoodLog>, res: Res
     const newFoodLog = new FoodLog({
       ...req.body,
       user: req.user!.id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     const foodLog = await newFoodLog.save();
     res.status(201).json({ foodLog, error: null, message: "success" });
@@ -36,7 +34,6 @@ export const httpUpdateFoodLog = async (req: Request<{}, {}, IFoodLog>, res: Res
       { _id: req.body._id },
       {
         ...req.body,
-        updatedAt: new Date(),
       }
     );
     res.status(201).json({ foodLog, error: null, message: "success" });

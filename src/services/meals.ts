@@ -5,8 +5,6 @@ export const createMeal = async (mealData: IMeal): Promise<IMeal> => {
   try {
     const newMeal = new Meal({
       ...mealData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     const meal = await newMeal.save();
     return meal;

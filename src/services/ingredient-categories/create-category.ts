@@ -5,8 +5,7 @@ export const createIngredientCategory = async (name: string) => {
     const ingredientCategory = await IngredientCategory.findOneAndUpdate(
       { name: name },
       {
-        $set: { name: name, updatedAt: new Date() },
-        $setOnInsert: { createdAt: new Date() },
+        $set: { name: name },
       },
       { upsert: true, new: true }
     );
