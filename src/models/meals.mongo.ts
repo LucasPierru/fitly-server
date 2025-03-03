@@ -42,6 +42,12 @@ const mealSchema = new Schema<IMeal>({
     },
   ],
   summary: String,
+  isPublic: Boolean,
+  user: {
+    type: SchemaTypes.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
 
 const Meal = model<IMeal>("Meal", mealSchema);

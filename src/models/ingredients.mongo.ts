@@ -37,5 +37,7 @@ const ingredientSchema = new Schema<IIngredient>({
   ],
 });
 
+ingredientSchema.index({ name: "text" });
+
 const Ingredient = model<IIngredient>("Ingredient", ingredientSchema);
 export default Ingredient;

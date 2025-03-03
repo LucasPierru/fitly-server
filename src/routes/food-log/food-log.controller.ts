@@ -4,38 +4,33 @@ import { IFoodLog } from "../../types/foodLogs.types";
 
 export const httpGetFoodLogs = async (req: Request, res: Response) => {
   try {
-    const foodLogs = await FoodLog.find({ userId: req.user!.id });
-    res.status(200).json({ foodLogs });
+    const foodLogs = await FoodLog.find({ user: req.user!.id });
+    res.status(200).json({ foodLogs, error: null, message: "success" });
   } catch (error) {
     res.status(500).json({
-      message: `Cannot access user's food logs`,
+      foodLogs: null,
       error,
+      message: "error",
     });
   }
 };
 
-export const httpCreateFoodLog = async (
-  req: Request<{}, {}, IFoodLog>,
-  res: Response
-) => {
+export const httpCreateFoodLog = async (req: Request<{}, {}, IFoodLog>, res: Response) => {
   try {
     const newFoodLog = new FoodLog({
       ...req.body,
-      userId: req.user!.id,
+      user: req.user!.id,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
     const foodLog = await newFoodLog.save();
-    res.status(201).json({ foodLog, message: "Food log created successfully" });
+    res.status(201).json({ foodLog, error: null, message: "success" });
   } catch (error) {
-    res.status(400).json({ message: "Food log creation failed", error });
+    res.status(400).json({ foodLog: null, error, message: "error" });
   }
 };
 
-export const httpUpdateFoodLog = async (
-  req: Request<{}, {}, IFoodLog>,
-  res: Response
-) => {
+export const httpUpdateFoodLog = async (req: Request<{}, {}, IFoodLog>, res: Response) => {
   try {
     const foodLog = await FoodLog.findOneAndUpdate(
       { _id: req.body._id },
@@ -44,9 +39,9 @@ export const httpUpdateFoodLog = async (
         updatedAt: new Date(),
       }
     );
-    res.status(201).json({ foodLog, message: "Food log updated successfully" });
+    res.status(201).json({ foodLog, error: null, message: "success" });
   } catch (error) {
-    res.status(400).json({ message: "Food log update failed", error });
+    res.status(400).json({ foodLog: null, error, message: "error" });
   }
 };
 
@@ -55,10 +50,12 @@ export const httpDeleteFoodLog = async (req: Request, res: Response) => {
     const foodLogDeleted = await FoodLog.findOneAndDelete({
       _id: req.params.foodLogId,
     });
-    res
-      .status(201)
-      .json({ foodLogDeleted, message: "Food log deleted successfully" });
+    res.status(201).json({ foodLogDeleted, error: null, message: "success" });
   } catch (error) {
-    res.status(400).json({ message: "Food log deletion failed", error });
+    res.status(400).json({
+      foodLogDeleted: null,
+      error,
+      message: "error",
+    });
   }
 };

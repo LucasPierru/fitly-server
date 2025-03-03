@@ -5,42 +5,33 @@ import { IMealPlan } from "../../types/mealPlans.types";
 export const httpGetMealPlan = async (req: Request, res: Response) => {
   try {
     const mealPlan = await MealPlan.findById(req.params.id);
-    res.status(200).json({ mealPlan });
+    res.status(200).json({ mealPlan, error: null, message: "success" });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: `Cannot access meal plan ${req.params.id}`, error });
+    res.status(500).json({ mealPlan: null, error, message: "error" });
   }
 };
 
 export const httpGetMealPlans = async (req: Request, res: Response) => {
   try {
-    const mealPlans = await MealPlan.find({ userId: req.user!.id });
-    res.status(200).json({ mealPlans });
+    const mealPlans = await MealPlan.find({ user: req.user!.id });
+    res.status(200).json({ mealPlans, error: null, message: "success" });
   } catch (error) {
-    res.status(500).json({ message: "Cannot access meal plans", error });
+    res.status(500).json({ mealPlans: null, error, message: "error" });
   }
 };
 
-export const httpCreateMealPlan = async (
-  req: Request<{}, {}, IMealPlan>,
-  res: Response
-) => {
+export const httpCreateMealPlan = async (req: Request<{}, {}, IMealPlan>, res: Response) => {
   try {
-    const { name, description, meals } = req.body;
-    const newMealPlan = new MealPlan({
-      name,
-      description,
-      meals,
-      userId: req.user!.id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-    const mealPlan = await newMealPlan.save();
-    res
-      .status(201)
-      .json({ mealPlan, message: "Meal plan created successfully" });
+    const mealPlan = await MealPlan.findOneAndUpdate(
+      { _id: req.body._id },
+      {
+        $set: { ...req.body, updatedAt: new Date() },
+        $setOnInsert: { createdAt: new Date(), user: req.user!.id },
+      },
+      { upsert: true, new: true }
+    );
+    res.status(201).json({ mealPlan, error: null, message: "success" });
   } catch (error) {
-    res.status(400).json({ message: "Meal plan creation failed", error });
+    res.status(400).json({ mealPlan: null, error, message: "error" });
   }
 };

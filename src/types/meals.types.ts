@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { DefaultProperties } from "./common.types";
 import { IIngredient } from "./ingredients.types";
+import { IUser } from "./users.types";
 
 export type Instruction = {
   name: string;
@@ -52,4 +53,6 @@ export type IMeal = DefaultProperties & {
   dishTypes: DishTypes[];
   diets: string[];
   instructions: Instruction[];
+  isPublic: boolean;
+  user: Types.ObjectId | IUser;
 };
