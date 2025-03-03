@@ -24,6 +24,7 @@ const userSchema = new Schema<IUser>(
       enum: ["fat_loss", "muscle_gain", "improve_stamina", "maintenance"],
       required: true,
     },
+    stripeCustomerId: { type: String, required: false },
     subscription: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Subscription",

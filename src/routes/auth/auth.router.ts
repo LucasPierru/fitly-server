@@ -6,6 +6,6 @@ const authRouter = express.Router();
 
 authRouter.post("/login", httpLogin);
 authRouter.post("/register", httpRegister);
-authRouter.post("/create", passportMiddleware, httpUpdatePassword);
+authRouter.post("/update-password", passportMiddleware, httpUpdatePassword);
 
 export default authRouter;

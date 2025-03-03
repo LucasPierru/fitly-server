@@ -20,5 +20,6 @@ export type IUser = DefaultProperties & {
   sex: Sex;
   howActive: HowActive;
   goal: Goal;
+  stripeCustomerId?: string;
   subscription?: Types.ObjectId | ISubscription;
 };

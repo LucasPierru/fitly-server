@@ -3,8 +3,10 @@ import jwt from "jsonwebtoken";
 import { startSession } from "mongoose";
 import User from "../../models/users.mongo";
 import { comparePasswords, hashPassword } from "../../services/hash";
-import { createSubscription } from "../../services/subscription/create-subscription";
+import { createSubscription } from "../../services/subscription/subscription";
 import "dotenv/config";
+import { createCustomer } from "../../services/customer/create-customer";
+import { IUser } from "../../types";
 
 export const httpLogin = async (req: Request, res: Response) => {
   try {
@@ -29,12 +31,12 @@ export const httpLogin = async (req: Request, res: Response) => {
   }
 };
 
-export const httpRegister = async (req: Request, res: Response) => {
+export const httpRegister = async (req: Request<{}, {}, IUser>, res: Response) => {
   const session = await startSession();
   session.startTransaction();
 
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, height, weight, bmr, howActive, sex, goal } = req.body;
 
     if (!email || !password || !firstName || !lastName) {
       res.status(400).json({
@@ -48,20 +50,23 @@ export const httpRegister = async (req: Request, res: Response) => {
       });
     }
 
-    const newUser = new User({
+    const user = await User.create({
       email,
       password,
       firstName,
       lastName,
+      height,
+      weight,
+      bmr,
+      howActive,
+      sex,
+      goal,
     });
 
-    const user = await newUser.save();
-    const { newSubscription, customer } = await createSubscription(user._id, email);
-    await User.findByIdAndUpdate(
-      user._id,
-      { stripeCustomerId: customer.id, subscription: newSubscription._id },
-      { session }
-    );
+    const customer = await createCustomer(email, `${firstName} ${lastName}`);
+
+    user.stripeCustomerId = customer.id;
+    await user.save();
 
     const token = jwt.sign({ id: user._id, email }, process.env.JWT_SECRET!, {
       expiresIn: "24h",

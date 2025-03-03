@@ -8,6 +8,7 @@ import favoriteMealRouter from "./favorite-meal/favorite-meal.router";
 import profileRouter from "./profile/profile.router";
 import ingredientRouter from "./ingredient/ingredient.router";
 import ingredientCategoryRouter from "./ingredient-category/ingredient-category.router";
+import subscriptionRouter from "./subscription/subscription.router";
 
 const api = express.Router();
 
@@ -20,5 +21,6 @@ api.use("/weight-log", weightLogRouter);
 api.use("/favorite-meal", favoriteMealRouter);
 api.use("/ingredient", ingredientRouter);
 api.use("/ingredient-category", ingredientCategoryRouter);
+api.use("/subscription", subscriptionRouter);
 
 export default api;
