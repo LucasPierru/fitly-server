@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import { startSession } from "mongoose";
 import User from "../../models/users.mongo";
 import { comparePasswords, hashPassword } from "../../services/hash";
-import jwt from "jsonwebtoken";
+import { createSubscription } from "../../services/subscription/create-subscription";
 import "dotenv/config";
 
 export const httpLogin = async (req: Request, res: Response) => {
@@ -28,6 +30,9 @@ export const httpLogin = async (req: Request, res: Response) => {
 };
 
 export const httpRegister = async (req: Request, res: Response) => {
+  const session = await startSession();
+  session.startTransaction();
+
   try {
     const { email, password, firstName, lastName } = req.body;
 
@@ -51,11 +56,22 @@ export const httpRegister = async (req: Request, res: Response) => {
     });
 
     const user = await newUser.save();
+    const { newSubscription, customer } = await createSubscription(user._id, email);
+    await User.findByIdAndUpdate(
+      user._id,
+      { stripeCustomerId: customer.id, subscription: newSubscription._id },
+      { session }
+    );
+
     const token = jwt.sign({ id: user._id, email }, process.env.JWT_SECRET!, {
       expiresIn: "24h",
     });
+    await session.commitTransaction();
+    session.endSession();
     res.status(201).json({ token, message: "User created successfully" });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     res.status(400).json({ message: "Registration failed", error });
   }
 };

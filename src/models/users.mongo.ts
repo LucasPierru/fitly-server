@@ -24,6 +24,11 @@ const userSchema = new Schema<IUser>(
       enum: ["fat_loss", "muscle_gain", "improve_stamina", "maintenance"],
       required: true,
     },
+    subscription: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subscription",
+      required: false,
+    },
   },
   { timestamps: true }
 );

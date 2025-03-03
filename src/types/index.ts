@@ -7,3 +7,4 @@ export { IMealPlan } from "./mealPlans.types";
 export { IUserMeal } from "./userMeals.types";
 export { IWeightLog } from "./weightLogs.types";
 export { IFoodLog } from "./foodLogs.types";
+export { ISubscription } from "./subscription.types";
