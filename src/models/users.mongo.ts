@@ -30,6 +30,7 @@ const userSchema = new Schema<IUser>(
       ref: "Subscription",
       required: false,
     },
+    roles: [{ type: String, enum: ["user", "admin"], required: true, default: ["user"] }],
   },
   { timestamps: true }
 );

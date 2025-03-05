@@ -8,6 +8,8 @@ export type HowActive = "sedentary" | "light" | "moderate" | "active" | "very_ac
 
 export type Goal = "fat_loss" | "muscle_gain" | "improve_stamina" | "maintenance";
 
+export type Role = "user" | "admin";
+
 export type IUser = DefaultProperties & {
   email: string;
   password: string;
@@ -22,4 +24,5 @@ export type IUser = DefaultProperties & {
   goal: Goal;
   stripeCustomerId?: string;
   subscription?: Types.ObjectId | ISubscription;
+  roles: Role[];
 };

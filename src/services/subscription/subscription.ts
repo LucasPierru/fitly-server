@@ -3,19 +3,16 @@ import "dotenv/config";
 const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY!);
 
 export const createSubscription = async (stripeCustomerId: string) => {
-  const session = await stripeInstance.checkout.sessions.create({
+  const subscription = await stripeInstance.subscriptions.create({
     customer: stripeCustomerId,
-    payment_method_types: ["card"],
-    line_items: [{ price: "price_1QyhP7RspX9AHcm1jTJqxJEW", quantity: 1 }],
-    mode: "subscription",
-    success_url: `https://yourapp.com/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: "https://yourapp.com/cancel",
-    subscription_data: {
-      trial_period_days: 7, // 7-day free trial
-    },
+    items: [{ price: "price_1QyhP7RspX9AHcm1jTJqxJEW", quantity: 1 }],
+    payment_behavior: "default_incomplete",
+    payment_settings: { save_default_payment_method: "on_subscription" },
+    expand: ["latest_invoice.payment_intent"],
+    trial_period_days: 7, // 7-day free trial
   });
 
-  return session;
+  return subscription;
 };
 
 export const cancelSubscription = async (subscriptionId: string) => {

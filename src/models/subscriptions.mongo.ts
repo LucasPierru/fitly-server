@@ -8,7 +8,7 @@ const subscriptionSchema = new Schema<ISubscription>(
     stripeSubscriptionId: { type: String, required: true, unique: true },
     status: {
       type: String,
-      enum: ["active", "trialing", "past_due", "canceled", "unpaid"],
+      enum: ["active", "trialing", "past_due", "canceled", "unpaid", "incomplete", "incomplete_expired"],
       required: true,
     },
     currentPeriodStart: { type: Date, required: true },
