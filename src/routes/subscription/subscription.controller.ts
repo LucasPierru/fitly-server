@@ -49,3 +49,16 @@ export const httpCancelSubscription = async (req: Request, res: Response) => {
     res.status(500).json({ canceledSubscription: null, error: error, message: "error" });
   }
 };
+
+export const httpGetSubscription = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    const subscription = await Subscription.findOne({ user: userId });
+
+    if (!subscription) throw Error("Subscription not found");
+
+    res.status(200).json({ subscription, error: null, message: "success" });
+  } catch (error) {
+    res.status(500).json({ subscription: null, error: error, message: "error" });
+  }
+};
