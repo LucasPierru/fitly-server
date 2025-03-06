@@ -14,13 +14,14 @@ export const handleWebhook = async (req: Request, res: Response) => {
     if (event.type === "customer.subscription.created") {
       const subscription = event.data.object;
       const user = await User.findOne({ stripeCustomerId: subscription.customer });
-      await Subscription.create({
+      const newSubscription = await Subscription.create({
         user: user?._id,
         status: subscription.status,
+        stripeSubscriptionId: subscription.id,
         currentPeriodStart: new Date(subscription.current_period_start * 1000),
         currentPeriodEnd: new Date(subscription.current_period_end * 1000),
       });
-      await User.updateOne({ stripeCustomerId: subscription.customer }, { subscription: subscription.id });
+      await User.updateOne({ stripeCustomerId: subscription.customer }, { subscription: newSubscription.id });
     }
 
     if (event.type === "customer.subscription.updated") {

@@ -36,7 +36,7 @@ export const httpRegister = async (req: Request<{}, {}, IUser>, res: Response) =
   session.startTransaction();
 
   try {
-    const { email, password, firstName, lastName, height, weight, bmr, howActive, sex, goal } = req.body;
+    const { email, password, firstName, lastName, height, weight, bmr, howActive, sex, goal, birthday } = req.body;
 
     if (!email || !password || !firstName || !lastName) {
       res.status(400).json({
@@ -61,6 +61,7 @@ export const httpRegister = async (req: Request<{}, {}, IUser>, res: Response) =
       howActive,
       sex,
       goal,
+      birthday,
     });
 
     const customer = await createCustomer(email, `${firstName} ${lastName}`);
@@ -75,6 +76,7 @@ export const httpRegister = async (req: Request<{}, {}, IUser>, res: Response) =
     session.endSession();
     res.status(201).json({ token, message: "User created successfully" });
   } catch (error) {
+    console.log({ error });
     await session.abortTransaction();
     session.endSession();
     res.status(400).json({ message: "Registration failed", error });

@@ -12,8 +12,15 @@ export const httpCreateSubscription = async (req: Request, res: Response) => {
 
     const subscription = await createSubscription(user.stripeCustomerId);
     const invoice: Stripe.Invoice = subscription.latest_invoice as Stripe.Invoice;
+    const setup_intent = subscription.pending_setup_intent as Stripe.SetupIntent;
     const payment_intent: Stripe.PaymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
-    const client_secret: string = payment_intent.client_secret || "";
+    let client_secret: string | null = null;
+
+    if (payment_intent) {
+      client_secret = payment_intent.client_secret;
+    } else if (setup_intent) {
+      client_secret = setup_intent.client_secret;
+    }
 
     res.status(200).json({
       subscriptionPrice: subscription.items.data[0].price.unit_amount,
@@ -23,6 +30,7 @@ export const httpCreateSubscription = async (req: Request, res: Response) => {
       message: "success",
     });
   } catch (error) {
+    console.log({ error });
     res.status(500).json({ subscriptionId: null, clientSecret: null, error: error, message: "error" });
   }
 };
