@@ -6,6 +6,7 @@ const ingredientSchema = new Schema<IIngredient>(
   {
     usdaId: Number,
     name: String,
+    keywords: [String],
     amount: Number,
     unit: String,
     unitShort: String,

@@ -36,7 +36,6 @@ export type IMeal = DefaultProperties & {
   cheap: boolean;
   veryPopular: boolean;
   sustainable: boolean;
-  lowFodmap: boolean;
   preparationMinutes: number;
   cookingMinutes: number;
   likes: number;

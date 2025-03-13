@@ -22,6 +22,7 @@ export type Nutrient = {
 export type IIngredient = DefaultProperties & {
   usdaId: number;
   name: string;
+  keywords: string[];
   amount: number;
   unit: string;
   unitShort: string;

@@ -22,7 +22,6 @@ const mealSchema = new Schema<IMeal>(
     dairyFree: Boolean,
     glutenFree: Boolean,
     ketogenic: Boolean,
-    lowFodmap: Boolean,
     sustainable: Boolean,
     vegan: Boolean,
     vegetarian: Boolean,

@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { startSession } from "mongoose";
 import User from "../../models/users.mongo";
 import { comparePasswords, hashPassword } from "../../services/hash";
-import { createSubscription } from "../../services/subscription/subscription";
 import "dotenv/config";
 import { createCustomer } from "../../services/customer/create-customer";
 import { IUser } from "../../types";
@@ -14,6 +13,7 @@ export const httpLogin = async (req: Request, res: Response) => {
     const user = await User.findOne({ email });
     if (!user || !(await comparePasswords(password, user.password))) {
       res.status(400).json({ message: "Invalid credentials" });
+      return;
     }
     const token = jwt.sign({ id: user?._id, email }, process.env.JWT_SECRET!, {
       expiresIn: "24h",
