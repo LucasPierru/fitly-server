@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { startSession } from "mongoose";
+import { startSession, Types } from "mongoose";
 import { IMeal } from "../../types/meals.types";
 import Meal from "../../models/meals.mongo";
 import UserMeal from "../../models/userMeals.mongo";
@@ -40,21 +40,22 @@ export const httpCreateMeal = async (req: Request<{}, {}, IMeal>, res: Response)
 
   try {
     const meal = await Meal.findOneAndUpdate(
-      { _id: req.body._id },
+      { _id: req.body._id || new Types.ObjectId() },
       {
         $set: req.body,
         $setOnInsert: { creator: req.user!.id },
       },
-      { upsert: true, new: true, session, includeResultMetadata: true }
+      { upsert: true, new: true, session, includeResultMetadata: false }
     );
-    if (meal.value && !meal.lastErrorObject?.updatedExisting) {
-      const userMeal = await UserMeal.create({ meal: meal.value._id, user: req.user!.id }, { session });
+    if (meal && !meal.errors) {
+      const userMeal = await UserMeal.create([{ meal: meal._id, user: req.user!.id }], { session });
     }
     await session.commitTransaction();
     session.endSession();
 
-    res.status(201).json({ meal: meal.value, error: null, message: "success" });
+    res.status(201).json({ meal, error: null, message: "success" });
   } catch (error) {
+    console.log({ error })
     await session.abortTransaction(); // Rollback changes on failure
     session.endSession();
     res.status(400).json({ meal: null, error, message: "error" });

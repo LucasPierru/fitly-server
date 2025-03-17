@@ -6,8 +6,8 @@ const mealSchema = new Schema<IMeal>(
   {
     title: String,
     image: String,
+    description: String,
     servings: Number,
-    readyInMinutes: Number,
     preparationMinutes: Number,
     cookingMinutes: Number,
     pricePerServing: Number,
@@ -39,13 +39,19 @@ const mealSchema = new Schema<IMeal>(
         unit: String,
       },
     ],
-    summary: String,
     isPublic: Boolean,
+    isApproved: Boolean,
     creator: {
       type: SchemaTypes.ObjectId,
       ref: "User",
       required: true,
     },
+    nutrition: {
+      calories: Number,
+      protein: Number,
+      fat: Number,
+      carbs: Number,
+    }
   },
   { timestamps: true }
 );
