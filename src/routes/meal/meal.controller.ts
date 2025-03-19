@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ObjectId, startSession, Types } from "mongoose";
+import { startSession, Types } from "mongoose";
 import { IMeal } from "../../types/meals.types";
 import Meal from "../../models/meals.mongo";
 import UserMeal from "../../models/userMeals.mongo";
@@ -15,15 +15,26 @@ export const httpGetMeal = async (req: Request, res: Response) => {
 };
 
 export const httpGetMeals = async (req: Request, res: Response) => {
+  const matchConditions: any = {
+    $or: [
+      req.query.filter !== "own" ? { isPublic: true } : {},
+      { creator: req.user!.id }
+    ]
+  };
+
+  if (req.query.filter === "protein") {
+    matchConditions['nutrition.protein'] = { $gte: 30 };
+  }
+
+  if (req.query.filter === "carbs") {
+    matchConditions['nutrition.carbs'] = { $gte: 30 };
+  }
+
+
   try {
     const meals = await Meal.aggregate([
       {
-        $match: {
-          $or: [
-            { isPublic: true },
-            { creator: req.user!.id }
-          ]
-        }
+        $match: matchConditions
       },
       {
         $unionWith: {
@@ -45,7 +56,6 @@ export const httpGetMeals = async (req: Request, res: Response) => {
       }
     ]);
     const newMeals = meals.map(meal => ({ ...meal, isOwner: meal.creator.toString() === req.user?.id?.toString() }));
-    console.log({ newMeals, meals })
     res.status(200).json({ meals: newMeals, error: null, message: "success" });
   } catch (error) {
     res.status(500).json({ meals: null, error, message: "error" });
