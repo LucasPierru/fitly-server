@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import { startSession, Types } from "mongoose";
+import { ObjectId, startSession, Types } from "mongoose";
 import { IMeal } from "../../types/meals.types";
 import Meal from "../../models/meals.mongo";
 import UserMeal from "../../models/userMeals.mongo";
+import { uploadFile } from "../../services/storage/storage";
 
 export const httpGetMeal = async (req: Request, res: Response) => {
   try {
@@ -15,10 +16,37 @@ export const httpGetMeal = async (req: Request, res: Response) => {
 
 export const httpGetMeals = async (req: Request, res: Response) => {
   try {
-    const userMeals = await UserMeal.find({ user: req.user!.id }).select("meal");
-    const mealIds = userMeals.map((userMeal) => userMeal.meal);
-    const meals = await Meal.find({ _id: { $nin: mealIds } });
-    res.status(200).json({ meals, error: null, message: "success" });
+    const meals = await Meal.aggregate([
+      {
+        $match: {
+          $or: [
+            { isPublic: true },
+            { creator: req.user!.id }
+          ]
+        }
+      },
+      {
+        $unionWith: {
+          coll: 'userMeals',
+          pipeline: [
+            { $match: { user: req.user!.id } },
+            {
+              $lookup: {
+                from: 'meals',
+                localField: 'meal',
+                foreignField: '_id',
+                as: 'mealDetails'
+              }
+            },
+            { $unwind: "$mealDetails" },
+            { $replaceRoot: { newRoot: "$mealDetails" } }
+          ]
+        }
+      }
+    ]);
+    const newMeals = meals.map(meal => ({ ...meal, isOwner: meal.creator.toString() === req.user?.id?.toString() }));
+    console.log({ newMeals, meals })
+    res.status(200).json({ meals: newMeals, error: null, message: "success" });
   } catch (error) {
     res.status(500).json({ meals: null, error, message: "error" });
   }
@@ -26,7 +54,7 @@ export const httpGetMeals = async (req: Request, res: Response) => {
 
 export const httpGetUserMeals = async (req: Request, res: Response) => {
   try {
-    const userMeals = await UserMeal.find({ user: req.user!.id }).select("meal").populate("meal");
+    const userMeals = await UserMeal.find({ user: req.user!.id }).select("meal").populate({ path: "meal" });
     const meals = userMeals.map((userMeal) => userMeal.meal);
     res.status(200).json({ meals, error: null, message: "success" });
   } catch (error) {
@@ -34,7 +62,7 @@ export const httpGetUserMeals = async (req: Request, res: Response) => {
   }
 };
 
-export const httpCreateMeal = async (req: Request<{}, {}, IMeal>, res: Response) => {
+export const httpCreateMeal = async (req: Request<{}, {}, IMeal & { image: { data: string; name: string, type: string } }>, res: Response) => {
   const session = await startSession();
   session.startTransaction();
 
@@ -42,12 +70,14 @@ export const httpCreateMeal = async (req: Request<{}, {}, IMeal>, res: Response)
     const meal = await Meal.findOneAndUpdate(
       { _id: req.body._id || new Types.ObjectId() },
       {
-        $set: req.body,
+        $set: { ...req.body, image: req.body.image.name },
         $setOnInsert: { creator: req.user!.id },
       },
       { upsert: true, new: true, session, includeResultMetadata: false }
     );
     if (meal && !meal.errors) {
+      const imageUrl = await uploadFile("fitly-meals", meal._id, req.body.image);
+      console.log({ imageUrl })
       const userMeal = await UserMeal.create([{ meal: meal._id, user: req.user!.id }], { session });
     }
     await session.commitTransaction();

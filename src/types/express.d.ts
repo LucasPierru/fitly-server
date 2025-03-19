@@ -1,9 +1,10 @@
 import * as express from "express";
+import { ObjectId } from "mongoose";
 
 declare global {
   namespace Express {
     interface User {
-      id: number;
+      id: ObjectId;
       email: string;
     }
     export interface Request {
