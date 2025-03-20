@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import MealPlan from "../../models/mealPlans.mongo";
 import { IMealPlan } from "../../types/mealPlans.types";
+import { Types } from "mongoose";
 
 export const httpGetMealPlan = async (req: Request, res: Response) => {
   try {
@@ -23,13 +24,14 @@ export const httpGetMealPlans = async (req: Request, res: Response) => {
 export const httpCreateMealPlan = async (req: Request<{}, {}, IMealPlan>, res: Response) => {
   try {
     const mealPlan = await MealPlan.findOneAndUpdate(
-      { _id: req.body._id },
+      { _id: req.body._id || new Types.ObjectId() },
       {
         $set: req.body,
         $setOnInsert: { user: req.user!.id },
       },
       { upsert: true, new: true }
     );
+    console.log({ mealPlan })
     res.status(201).json({ mealPlan, error: null, message: "success" });
   } catch (error) {
     res.status(400).json({ mealPlan: null, error, message: "error" });
