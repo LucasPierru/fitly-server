@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  httpAddMealToMealPlan,
   httpCreateMealPlan,
   httpGetMealPlan,
   httpGetMealPlans,
@@ -11,5 +12,6 @@ const mealPlanRouter = express.Router();
 mealPlanRouter.get("/details/:id", passportMiddleware, httpGetMealPlan);
 mealPlanRouter.get("/all", httpGetMealPlans);
 mealPlanRouter.post("/create", passportMiddleware, httpCreateMealPlan);
+mealPlanRouter.post("/add-meal", passportMiddleware, httpAddMealToMealPlan);
 
 export default mealPlanRouter;
