@@ -2,6 +2,46 @@ import { Request, Response } from "express";
 import MealPlan from "../../models/mealPlans.mongo";
 import { IMealPlan } from "../../types/mealPlans.types";
 import { Types } from "mongoose";
+import { IMeal } from "../../types";
+
+export const httpGetMealPlanMetadata = async (req: Request, res: Response) => {
+  try {
+    const mealPlan = await MealPlan.findById(req.params.id).populate({
+      path: 'meals.meal', // Populate the 'meal' reference in the 'meals' array
+      model: 'Meal',
+    })
+
+    const macrosMap = new Map();
+    let newMealPlan;
+
+    mealPlan?.meals.forEach(meal => {
+      const { nutrition } = meal.meal as IMeal;
+      const { day } = meal;
+      if (macrosMap.get(day)) {
+        const macros = macrosMap.get(day);
+        macrosMap.set(day, {
+          calories: macros.calories + nutrition.calories,
+          protein: macros.protein + nutrition.protein,
+          carbs: macros.carbs + nutrition.carbs,
+          fat: macros.fat + nutrition.fat,
+        });
+      } else {
+        macrosMap.set(day, {
+          calories: nutrition.calories,
+          protein: nutrition.protein,
+          carbs: nutrition.carbs,
+          fat: nutrition.fat,
+        });
+      }
+      newMealPlan = { ...mealPlan.toObject(), macros: Object.fromEntries(macrosMap) };
+    })
+
+
+    res.status(200).json({ mealPlan: newMealPlan, error: null, message: "success" });
+  } catch (error) {
+    res.status(500).json({ mealPlan: null, error, message: "error" });
+  }
+};
 
 export const httpGetMealPlan = async (req: Request, res: Response) => {
   const day = req.query.day;
