@@ -58,8 +58,23 @@ export const httpSearchIngredient = async (req: Request, res: Response) => {
     query.nutrients = {};
   } */
 
+  const pipeline = [
+    {
+      $search: {
+        index: "default", // Replace with your Atlas Search index name
+        text: {
+          query: search,
+          path: ["name"], // Fields to search in
+          fuzzy: { maxEdits: 2 }, // Enable typo tolerance
+        },
+      },
+    },
+    { $limit: 10 }, // Limit results to 10
+    { $project: { _id: 1, name: 1, score: { $meta: "searchScore" } } }, // Include search score
+  ];
+
   try {
-    const ingredients = await Ingredient.find(query).limit(10).populate("category");
+    const ingredients = await Ingredient.aggregate(pipeline);
     res.status(200).json({ ingredients, error: null, message: "success" });
   } catch (error) {
     res.status(500).json({ ingredients: null, error, message: "error" });

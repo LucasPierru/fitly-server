@@ -59,6 +59,7 @@ export const httpGetSubscription = async (req: Request, res: Response) => {
 
     res.status(200).json({ subscription, error: null, message: "success" });
   } catch (error) {
+    console.log({ error });
     res.status(500).json({ subscription: null, error: error, message: "error" });
   }
 };

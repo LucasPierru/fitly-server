@@ -53,9 +53,9 @@ const startServer = async () => {
     });
   }); */
 
-  server.listen(4000, () => {
+  server.listen(4000, async () => {
     console.log(`Server running in 4000`);
-    //importIngredients();
+    //await importIngredients();
   });
 };
 

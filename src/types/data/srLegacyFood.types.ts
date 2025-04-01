@@ -136,9 +136,9 @@ export type FoodNutrientSource = {
 export type Nutrient = {
   id: number;
   number: string;
-  name: Name;
+  name: string;
   rank: number;
-  unitName: UnitName;
+  unitName: string;
 };
 
 export type Name =

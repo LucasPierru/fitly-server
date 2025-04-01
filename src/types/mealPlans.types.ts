@@ -5,8 +5,7 @@ import { IIngredient } from "./ingredients.types";
 import { IUser } from "./users.types";
 
 export type IMealPlan = DefaultProperties & {
-  name: string;
-  description: string;
+
   meals: {
     _id: Types.ObjectId;
     meal?: Types.ObjectId | IMeal;

@@ -1,10 +1,11 @@
 import mongoose, { SchemaTypes } from "mongoose";
-import { IMealPlan } from "../types";
+import { ISavedMealPlan } from "../types";
 const { Schema, model } = mongoose;
 
-const mealPlanSchema = new Schema<IMealPlan>(
+const savedMealPlanSchema = new Schema<ISavedMealPlan>(
   {
-
+    name: String,
+    description: String,
     meals: [
       {
         meal: { type: SchemaTypes.ObjectId, ref: "Meal", required: false },
@@ -24,5 +25,5 @@ const mealPlanSchema = new Schema<IMealPlan>(
   { timestamps: true }
 );
 
-const MealPlan = model("MealPlan", mealPlanSchema);
-export default MealPlan;
+const SavedMealPlan = model("SavedMealPlan", savedMealPlanSchema);
+export default SavedMealPlan;

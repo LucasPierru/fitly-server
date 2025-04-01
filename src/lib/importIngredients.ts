@@ -1,5 +1,5 @@
-import foundationDownload from "../data/foundationDownload.json";
-import srDownload from "../data/FoodData_Central_sr_legacy_food_json_2021-10-28.json";
+import * as foundationDownload from "../data/foundationDownload.json";
+import * as srDownload from "../data/FoodData_Central_sr_legacy_food_json_2021-10-28.json";
 import {
   FoundationDownload,
   FoundationFood,
@@ -77,151 +77,161 @@ export const importIngredients = async () => {
     )
   );
 
-  const ingredients = await Promise.all(
-    foundationFoods.map(async (food) => {
-      let energyNutrients = null;
-      if (
-        !food.foodNutrients.find(
-          (nutrient) => nutrient.nutrient.name === "Energy"
-        )
-      ) {
-        energyNutrients = {
-          name: "Energy",
-          amount: calculateCalories(food),
-          unit: "kcal" as UnitName,
-        };
-      }
-      const nutrients = food.foodNutrients
-        .filter((nutrient) =>
-          nutrientSelection.includes(nutrient.nutrient.name)
-        )
-        .map((nutrient) => {
-          return {
-            name: nutrient.nutrient.name,
-            amount: nutrient.amount,
-            unit: nutrient.nutrient.unitName,
+  try {
+    console.log(foundationFoods.length, srFoods.length);
+    const ingredients = await Promise.all(
+      foundationFoods.map(async (food) => {
+        let energyNutrients = null;
+        if (
+          !food.foodNutrients.find(
+            (nutrient) => nutrient.nutrient.name === "Energy"
+          )
+        ) {
+          energyNutrients = {
+            name: "Energy",
+            amount: calculateCalories(food),
+            unit: "kcal" as UnitName,
           };
-        });
-      if (energyNutrients) nutrients.push(energyNutrients);
-
-      const ingredientCategory = await createIngredientCategory(
-        food.foodCategory.description
-      );
-
-      return {
-        usdaId: food.fdcId,
-        name: food.description,
-        dataSource: "Foundation",
-        category: ingredientCategory._id,
-        alternateUnits: food.foodPortions.map((portion) => {
-          return {
-            amount: portion.amount,
-            unit: portion.measureUnit.name,
-            gramWeight: portion.gramWeight,
-          };
-        }),
-        amount: 100,
-        unit: "grams",
-        unitShort: "g",
-        estimatedCost: {
-          value: 0,
-          unit: "USD",
-        },
-        image: "",
-        nutrients: food.foodNutrients
+        }
+        const nutrients = food.foodNutrients
           .filter((nutrient) =>
             nutrientSelection.includes(nutrient.nutrient.name)
           )
           .map((nutrient) => {
             return {
               name: nutrient.nutrient.name,
-              amount: nutrient.amount!,
+              amount: nutrient.amount,
               unit: nutrient.nutrient.unitName,
             };
+          });
+        if (energyNutrients) nutrients.push(energyNutrients);
+
+        const ingredientCategory = await createIngredientCategory(
+          food.foodCategory.description
+        );
+
+        return {
+          usdaId: food.fdcId,
+          name: food.description.split(",").join(""),
+          dataSource: "Foundation",
+          category: ingredientCategory._id,
+          alternateUnits: food.foodPortions.map((portion) => {
+            return {
+              amount: portion.amount,
+              unit: portion.measureUnit.name,
+              gramWeight: portion.gramWeight,
+            };
           }),
-      };
-    })
-  );
-  const srIngredients = await Promise.all(
-    srFoods.map(async (food) => {
-      let energyNutrients: Nutrient | null = null;
-      if (
-        !food.foodNutrients.find(
-          (nutrient) => nutrient.nutrient.name === "Energy"
-        )
-      ) {
-        energyNutrients = {
-          name: "Energy",
-          amount: calculateCalories(food),
-          unit: "kcal" as UnitName,
+          amount: 100,
+          unit: "grams",
+          unitShort: "g",
+          estimatedCost: {
+            value: 0,
+            unit: "USD",
+          },
+          image: "",
+          nutrients: food.foodNutrients
+            .filter((nutrient) =>
+              nutrientSelection.includes(nutrient.nutrient.name)
+            )
+            .map((nutrient) => {
+              return {
+                name: nutrient.nutrient.name,
+                amount: nutrient.amount!,
+                unit: nutrient.nutrient.unitName,
+              };
+            }),
         };
-      }
-      const nutrients = food.foodNutrients
-        .filter((nutrient) =>
-          nutrientSelection.includes(nutrient.nutrient.name)
-        )
-        .map((nutrient) => {
-          return {
-            name: nutrient.nutrient.name,
-            amount: nutrient.amount,
-            unit: nutrient.nutrient.unitName,
-          };
-        });
-      if (energyNutrients) nutrients.push(energyNutrients);
+      })
+    );
 
-      const ingredientCategory = await createIngredientCategory(
-        food.foodCategory.description
-      );
+    console.log({ ingredients });
 
-      return {
-        usdaId: food.fdcId,
-        name: food.description,
-        dataSource: "Foundation",
-        category: ingredientCategory._id,
-        alternateUnits: food.foodPortions.map((portion) => {
-          const amount = portion.amount
-            ? portion.amount
-            : convertGramsToUnit(portion.modifier, portion.gramWeight);
-          const unit =
-            portion.measureUnit.name !== "undetermined"
-              ? portion.measureUnit.name
-              : portion.modifier;
-          return {
-            amount: amount,
-            unit: unit,
-            gramWeight: portion.gramWeight,
+    const srIngredients = await Promise.all(
+      srFoods.map(async (food) => {
+        let energyNutrients: Nutrient | null = null;
+        if (
+          !food.foodNutrients.find(
+            (nutrient) => nutrient.nutrient.name === "Energy"
+          )
+        ) {
+          energyNutrients = {
+            name: "Energy" as Nutrient["name"],
+            amount: calculateCalories(food),
+            unit: "kcal" as UnitName,
           };
-        }),
-        amount: 100,
-        unit: "grams",
-        unitShort: "g",
-        estimatedCost: {
-          value: 0,
-          unit: "USD",
-        },
-        image: "",
-        nutrients: food.foodNutrients
+        }
+        const nutrients = food.foodNutrients
           .filter((nutrient) =>
             nutrientSelection.includes(nutrient.nutrient.name)
           )
           .map((nutrient) => {
             return {
               name: nutrient.nutrient.name,
-              amount: nutrient.amount!,
+              amount: nutrient.amount,
               unit: nutrient.nutrient.unitName,
             };
-          }),
-      };
-    })
-  );
-  const nutrientsSet = new Set();
-  foundationFoods.map((ingredient) =>
-    ingredient.foodNutrients.forEach((nutrient) =>
-      nutrientsSet.add(nutrient.nutrient.name)
-    )
-  );
+          });
+        if (energyNutrients) nutrients.push(energyNutrients);
 
-  const newIngredients = await createIngredients(ingredients);
-  const newIngredientsSR = await createIngredients(srIngredients);
-  return newIngredients;
+        const ingredientCategory = await createIngredientCategory(
+          food.foodCategory.description
+        );
+
+        return {
+          usdaId: food.fdcId,
+          name: food.description.split(",").join(""),
+          dataSource: "Foundation",
+          category: ingredientCategory._id,
+          alternateUnits: food.foodPortions.map((portion) => {
+            const amount = portion.amount
+              ? portion.amount
+              : convertGramsToUnit(portion.modifier, portion.gramWeight);
+            const unit =
+              portion.measureUnit.name !== "undetermined"
+                ? portion.measureUnit.name
+                : portion.modifier;
+            return {
+              amount: amount,
+              unit: unit,
+              gramWeight: portion.gramWeight,
+            };
+          }),
+          amount: 100,
+          unit: "grams",
+          unitShort: "g",
+          estimatedCost: {
+            value: 0,
+            unit: "USD",
+          },
+          image: "",
+          nutrients: food.foodNutrients
+            .filter((nutrient) =>
+              nutrientSelection.includes(nutrient.nutrient.name)
+            )
+            .map((nutrient) => {
+              return {
+                name: nutrient.nutrient.name,
+                amount: nutrient.amount!,
+                unit: nutrient.nutrient.unitName,
+              };
+            }),
+        };
+      })
+    );
+    console.log({ srIngredients });
+    const nutrientsSet = new Set();
+    foundationFoods.map((ingredient) =>
+      ingredient.foodNutrients.forEach((nutrient) =>
+        nutrientsSet.add(nutrient.nutrient.name)
+      )
+    );
+
+    const newIngredients = await createIngredients(ingredients);
+    const newIngredientsSR = await createIngredients(srIngredients);
+    console.log("done")
+    return newIngredients;
+  } catch (error) {
+    console.error("Error importing ingredients:", error);
+  }
 };
