@@ -33,8 +33,9 @@ const mealSchema = new Schema<IMeal>(
         ingredient: {
           type: SchemaTypes.ObjectId,
           ref: "Ingredient",
-          required: true,
+          required: false,
         },
+        name: { type: String, required: false },
         quantity: Number,
         unit: String,
       },
@@ -44,7 +45,7 @@ const mealSchema = new Schema<IMeal>(
     creator: {
       type: SchemaTypes.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
     },
     nutrition: {
       calories: Number,

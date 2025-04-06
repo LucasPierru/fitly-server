@@ -87,7 +87,6 @@ export const httpCreateMeal = async (req: Request<{}, {}, IMeal & { image: { dat
     );
     if (meal && !meal.errors) {
       const imageUrl = await uploadFile("fitly-meals", meal._id, req.body.image);
-      console.log({ imageUrl })
       const userMeal = await UserMeal.create([{ meal: meal._id, user: req.user!.id }], { session });
     }
     await session.commitTransaction();

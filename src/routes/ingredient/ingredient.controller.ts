@@ -70,7 +70,7 @@ export const httpSearchIngredient = async (req: Request, res: Response) => {
       },
     },
     { $limit: 10 }, // Limit results to 10
-    { $project: { _id: 1, name: 1, score: { $meta: "searchScore" } } }, // Include search score
+    { $project: { _id: 1, name: 1, alternateUnits: 1, score: { $meta: "searchScore" } } }, // Include search score
   ];
 
   try {
